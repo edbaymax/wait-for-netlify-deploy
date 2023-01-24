@@ -1,4 +1,4 @@
-name: "Wait for Netlify"
+name: "Wait for Netlify Deployment"
 description: "Wait for Netlify Deploy Preview to complete"
 branding:
   icon: "clock"
