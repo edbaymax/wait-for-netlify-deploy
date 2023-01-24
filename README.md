@@ -1,12 +1,20 @@
-# Wait for Netlify — A GitHub Action ⏱
+# Wait for Netlify Deploy — A GitHub Action ⏱
 
 Do you have other Github actions (Lighthouse, Cypress, etc) that depend on the Netlify Preview URL? This action will wait until the url is available before running the next task.
+
+This is a fork of [JakePartusch/wait-for-netlify-action](https://github.com/JakePartusch/wait-for-netlify-action) which only works for `pull_request`. This for works for `push` action as well.
+
+You will need to generate a [Personal access token](https://app.netlify.com/user/applications/personal) to use and pass it as the NETLIFY_AUTH_TOKEN environment variable.
 
 ## Inputs
 
 ### `site_name`
 
 **Required** The name of the Netlify site to reach `https://{site_name}.netlify.app`
+
+### `pr_number`
+
+The PR number coming from the previous step, using `jwalton/gh-find-current-pr@v1` action. It's available for `e2e_tests` branch. For `mnaster` branch, PR number is calculated from GitHub context.
 
 ### `request_headers`
 
@@ -26,56 +34,17 @@ Optional — The page that needs to be tested for 200. Defaults to "/" (eg: `htt
 
 The netlify deploy preview url that was deployed.
 
-## Example usage
-
-Basic Usage
+## Usage
 
 ```yaml
 steps:
-  - name: Waiting for 200 from the Netlify Preview
-    uses: jakepartusch/wait-for-netlify-action@v1.4
-    id: waitFor200
+  - name: Wait for Netlify Deploy
+    uses: kukiron/wait-for-netlify-deploy@v1.0
+    id: waitForDeployment
     with:
-      site_name: "jakepartusch"
-      max_timeout: 60
+      site_name: ${{ secrets.NETLIFY_SITE_NAME }}
+      # pr_number: ${{ steps.findPR.outputs.pr }} # available for e2e_tests branch
+      max_timeout: 300
+    env:
+      NETLIFY_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 ```
-
-<details>
-<summary>Complete example with Lighthouse</summary>
-<br />
-
-```yaml
-name: Lighthouse
-
-on: [pull_request]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-      - name: Install
-        run: |
-          npm ci
-      - name: Build
-        run: |
-          npm run build
-      - name: Waiting for 200 from the Netlify Preview
-        uses: jakepartusch/wait-for-netlify-action@v1.4
-        id: waitFor200
-        with:
-          site_name: "jakepartusch"
-      - name: Lighthouse CI
-        run: |
-          npm install -g @lhci/cli@0.3.x
-          lhci autorun --upload.target=temporary-public-storage --collect.url=${{ steps.waitFor200.outputs.url }} || echo "LHCI failed!"
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-```
-
-</details>
