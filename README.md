@@ -14,7 +14,8 @@ You will need to generate a [Personal access token](https://app.netlify.com/user
 
 ### `pr_number`
 
-The PR number coming from the previous step, using `jwalton/gh-find-current-pr@v1` action. It's available for `e2e_tests` branch. For `master` branch, PR number is calculated from GitHub context.
+**Required** For `e2e_tests` branch, tThe PR number coming from the previous step (using `jwalton/gh-find-current-pr@v1` action).
+For `master` branch, use PR number from GitHub event.
 
 ### `request_headers`
 
@@ -38,12 +39,13 @@ The netlify deploy preview url that was deployed.
 
 ```yaml
 steps:
-  - name: Netlify Deploy Completion
-    uses: kukiron/wait-for-netlify-deploy@v1.0
+  - name: Wait for Netlify Deploy
+    uses: kukiron/wait-for-netlify-deploy@v1.2
     id: waitForDeployment
     with:
       site_name: ${{ secrets.NETLIFY_SITE_NAME }}
-      # pr_number: ${{ steps.findPR.outputs.pr }} # available for e2e_tests branch
+      # pr_number: ${{ steps.findPR.outputs.pr }} # use for `e2e_tests` branch
+      # pr_number: ${{ github.event.pull_request.number }} # use for `master` branch
       max_timeout: 300
     env:
       NETLIFY_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
