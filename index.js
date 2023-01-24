@@ -18,22 +18,28 @@ const waitForUrl = async (url, MAX_TIMEOUT, { headers }) => {
 
 const run = async () => {
   try {
-    const PR_NUMBER = github.context.payload.number;
+    // use PR number from input - for e2e_tests branch
+    // use PR number from context - for master branch
+    const PR_NUMBER = Number(core.getInput("pr_number")) || github.context.payload.number;
+
     if (!PR_NUMBER) {
-      core.setFailed(
-        "Action must be run in conjunction with the `pull_request` event"
-      );
+      core.setFailed("No PR number is available");
     }
+
     const MAX_TIMEOUT = Number(core.getInput("max_timeout")) || 60;
     const siteName = core.getInput("site_name");
     const basePath = core.getInput("base_path");
+
     if (!siteName) {
       core.setFailed("Required field `site_name` was not provided");
     }
+
     const url = `https://deploy-preview-${PR_NUMBER}--${siteName}.netlify.app${basePath}`;
     core.setOutput("url", url);
+
     const extraHeaders = core.getInput("request_headers");
     const headers = !extraHeaders ? {} : JSON.parse(extraHeaders)
+
     console.log(`Waiting for a 200 from: ${url}`);
     await waitForUrl(url, MAX_TIMEOUT, {
       headers,
