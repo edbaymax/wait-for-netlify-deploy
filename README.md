@@ -1,8 +1,8 @@
-# Wait for Netlify Deploy — A GitHub Action ⏱
+# Netlify Deploy Completion — A GitHub Action ⏱
 
 Do you have other Github actions (Lighthouse, Cypress, etc) that depend on the Netlify Preview URL? This action will wait until the url is available before running the next task.
 
-This is a fork of [JakePartusch/wait-for-netlify-action](https://github.com/JakePartusch/wait-for-netlify-action) which only works for `pull_request`. This for works for `push` action as well.
+This is a fork of [JakePartusch/wait-for-netlify-action](https://github.com/JakePartusch/wait-for-netlify-action) which only works for `pull_request`. This works for `push` action as well with `pr_number` as input from previous step.
 
 You will need to generate a [Personal access token](https://app.netlify.com/user/applications/personal) to use and pass it as the NETLIFY_AUTH_TOKEN environment variable.
 
@@ -14,11 +14,11 @@ You will need to generate a [Personal access token](https://app.netlify.com/user
 
 ### `pr_number`
 
-The PR number coming from the previous step, using `jwalton/gh-find-current-pr@v1` action. It's available for `e2e_tests` branch. For `mnaster` branch, PR number is calculated from GitHub context.
+The PR number coming from the previous step, using `jwalton/gh-find-current-pr@v1` action. It's available for `e2e_tests` branch. For `master` branch, PR number is calculated from GitHub context.
 
 ### `request_headers`
 
-Optional — Stringified HTTP Header object key/value pairs to send in requests (eg. `'{ "Authorization": "Basic YWxhZGRpbjpvcGVuc2VzYW1l }'`)
+Optional — Stringified HTTP Header object key/value pairs to send in requests (e.g - `'{ "Authorization": "Basic YWxhZGRpbjpvcGVuc2VzYW1l }'`)
 
 ### `max_timeout`
 
@@ -38,7 +38,7 @@ The netlify deploy preview url that was deployed.
 
 ```yaml
 steps:
-  - name: Wait for Netlify Deploy
+  - name: Netlify Deploy Completion
     uses: kukiron/wait-for-netlify-deploy@v1.0
     id: waitForDeployment
     with:
