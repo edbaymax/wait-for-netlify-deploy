@@ -10,11 +10,11 @@ You will need to generate a [Personal access token](https://app.netlify.com/user
 
 ### `site_name`
 
-**Required** The name of the Netlify site to reach `https://{site_name}.netlify.app`
+**Required** — The name of the Netlify site to reach `https://{site_name}.netlify.app`
 
 ### `pr_number`
 
-**Required** For `e2e_tests` branch, tThe PR number coming from the previous step (using `jwalton/gh-find-current-pr@v1` action).
+**Required** — For `e2e_tests` branch, the PR number coming from the previous step (using `jwalton/gh-find-current-pr@v1` action).
 For `master` branch, use PR number from GitHub event.
 
 ### `request_headers`
@@ -40,7 +40,7 @@ The netlify deploy preview url that was deployed.
 ```yaml
 steps:
   - name: Wait for Netlify Deploy
-    uses: kukiron/wait-for-netlify-deploy@v1.2
+    uses: kukiron/wait-for-netlify-deploy@v1.2.1
     id: waitForDeployment
     with:
       site_name: ${{ secrets.NETLIFY_SITE_NAME }}
