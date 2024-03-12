@@ -40,7 +40,7 @@ The netlify deploy preview url that was deployed.
 ```yaml
 steps:
   - name: Wait for Netlify Deploy
-    uses: kukiron/wait-for-netlify-deploy@v1.2.1
+    uses: kukiron/wait-for-netlify-deploy@v1.2.2
     id: waitForDeployment
     with:
       site_name: ${{ secrets.NETLIFY_SITE_NAME }}
