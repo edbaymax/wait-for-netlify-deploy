@@ -23,7 +23,7 @@ const run = async () => {
     const PR_NUMBER = Number(core.getInput("pr_number")) || github.context.payload.number;
 
     if (!PR_NUMBER) {
-      core.setFailed("No PR number is available");
+      
     }
 
     const MAX_TIMEOUT = Number(core.getInput("max_timeout")) || 60;
@@ -34,7 +34,21 @@ const run = async () => {
       core.setFailed("Required field `site_name` was not provided");
     }
 
-    const url = `https://deploy-preview-${PR_NUMBER}--${siteName}.netlify.app${basePath}`;
+    // const url = `https://deploy-preview-${PR_NUMBER}--${siteName}.netlify.app${basePath}`;
+    let url = '';
+
+    if(!PR_NUMBER) {
+      console.warn('No PR number is available, using branch name');
+      const branchName = github.context.ref.replace('refs/heads/', '');
+      if(branchName === "main") {
+        url = `https://${siteName}.netlify.app${basePath}`;
+      } else {
+        url = `https://${branchName}--${siteName}.netlify.app${basePath}`;
+      }
+    } else {
+      url = `https://deploy-preview-${PR_NUMBER}--${siteName}.netlify.app${basePath}`;
+    }
+
     core.setOutput("url", url);
 
     const extraHeaders = core.getInput("request_headers");
